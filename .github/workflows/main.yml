@@ -21,7 +21,7 @@ jobs:
 
         - name: Install Dependencies
           run: |
-            apk add musl-dev linux-headers g++ cmake cjson-dev libwebsockets-dev
+            apk add musl-dev linux-headers gcc cmake cjson-dev libwebsockets-dev
             
           shell: alpine.sh --root {0}
 
