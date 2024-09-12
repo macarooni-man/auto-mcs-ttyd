@@ -1,0 +1,41 @@
+---
+name: Compiler
+on:
+  push: null
+jobs:
+
+  alpine:
+      name: Docker Build
+      runs-on: ubuntu-latest
+      steps:
+
+        - name: Clone Repo
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 1
+
+        - name: Setup Alpine Linux
+          uses: jirutka/setup-alpine@v1
+          with:
+            branch: v3.20
+
+        - name: Install Dependencies
+          run: |
+            apk add musl-dev linux-headers g++ cmake cjson-dev libwebsockets-dev
+            
+          shell: alpine.sh --root {0}
+
+        - name: Compile ttyd
+          run: |
+            mkdir build && cd build
+            cmake ..
+            make && sudo make install
+
+          shell: alpine.sh {0}
+
+        - name: Upload Binary
+          uses: actions/upload-artifact@v4
+          with:
+            name: ttyd
+            path: .
+            retention-days: 5
