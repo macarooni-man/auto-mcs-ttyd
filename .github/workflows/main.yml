@@ -21,7 +21,7 @@ jobs:
 
         - name: Install Dependencies
           run: |
-            apk add musl-dev linux-headers gcc cmake cjson-dev libwebsockets-dev
+            apk add build-base libwebsockets-evlib_uv bsd-compat-headers cmake json-c-dev libuv-dev libwebsockets-dev openssl-dev>3 samurai zlib-dev
             
           shell: alpine.sh --root {0}
 
