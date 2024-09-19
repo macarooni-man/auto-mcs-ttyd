@@ -5,7 +5,7 @@ on:
 jobs:
 
   alpine:
-      name: Docker Build
+      name: Alpine Build
       runs-on: ubuntu-latest
       steps:
 
@@ -36,6 +36,45 @@ jobs:
         - name: Upload Binary
           uses: actions/upload-artifact@v4
           with:
-            name: auto-mcs-ttyd
+            name: auto-mcs-ttyd-amd64
+            path: build/ttyd
+            retention-days: 5
+
+
+
+  alpine-arm:
+      name: Alpine Build (arm64)
+      runs-on: ubuntu-latest
+      steps:
+
+        - name: Clone Repo
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 1
+
+        - name: Setup Alpine Linux
+          uses: jirutka/setup-alpine@v1
+          with:
+            arch: aarch64
+            branch: v3.20
+
+        - name: Install Dependencies
+          run: |
+            apk add build-base libwebsockets-evlib_uv bsd-compat-headers cmake json-c-dev libuv-dev libwebsockets-dev openssl-dev>3 samurai zlib-dev
+            
+          shell: alpine.sh --root {0}
+
+        - name: Compile ttyd
+          run: |
+            mkdir build && cd build
+            cmake ..
+            make && make install
+
+          shell: alpine.sh --root {0}
+        
+        - name: Upload Binary
+          uses: actions/upload-artifact@v4
+          with:
+            name: auto-mcs-ttyd-arm64
             path: build/ttyd
             retention-days: 5
